@@ -33,56 +33,40 @@ typedef long long ll;
 
 void solve(){
     int n, ans = 0; cin >> n;
-    vector<int> X(n + 1), L(n + 1);
-    vector<double> p;
-    p.pb(-1e18), p.pb(1e18);
-    for(int i = 1; i <= n; ++i) cin >> X[i];
-    for(int i = 1; i <= n; ++i) cin >> L[i];
-    for(int i = 0; i <= n; ++i){
-        for(int j = 0; j <= n; ++j){
-            p.pb((X[i] + X[j]) / 2);
+    vector<int> X(n), L(n);
+    vector<int> p;
+    p.pb(-1000000000000000000), p.pb(1000000000000000001);
+    for(int i = 0; i < n; ++i) cin >> X[i];
+    for(int i = 0; i < n; ++i) cin >> L[i];
+    for(int i = 0; i < n; ++i){
+        p.pb(X[i]);
+        for(int j = i + 1; j < n; ++j){
+            int tmp = X[i] + X[j];
+            if(tmp % 2){
+                p.pb(tmp / 2 + 1);
+            }else{
+                p.pb(tmp / 2 + 1);
+            }
         }
     }
-    
     sort(p.begin(), p.end());
     p.resize(unique(p.begin(), p.end()) - p.begin());
-    for(int i = 0; i < p.size() - 1; ++i){
-        int l = ceil(p[i]), r = floor(p[i + 1]);
-        if(l == p[i]) l++;
-        if(r == p[i + 1]) r--;
-        if(l > r) continue;
+    for(int i = 0; i < (int)p.size() - 1; ++i){
+        int l = p[i], r = p[i + 1] - 1;
         vector<pii> dist;
-        for(int i = 1; i <= n; ++i){
-            dist.pb(pii(abs(l - X[i]), i));
+        for(int j = 0; j < n; ++j){
+            dist.pb(pii(abs(l - X[j]), j));
         }
         sort(dist.begin(), dist.end());
-        for(int i = 0; i < n; ++i){
-            if(X[dist[i].ss] <= l){
-                r = min(r, X[dist[i].ss] + L[i + 1]);
+        for(int j = 0; j < n; ++j){
+            if(X[dist[j].ss] <= r){
+                r = min(r, X[dist[j].ss] + L[j]);
             }
-            else if(X[dist[i].ss] >= r){
-                l = max(l, X[dist[i].ss] - L[i + 1]);
+            else if(X[dist[j].ss] >= l){
+                l = max(l, X[dist[j].ss] - L[j]);
             }
         }
         ans += max(0ll, r - l + 1);
-    }
-    for(int i = 0; i < p.size(); i++){
-        int t = floor(p[i]), ok = 1;
-        if(t != p[i]) continue;
-        vector<pii> dist;
-        for(int i = 1; i <= n; ++i){
-            dist.pb(pii(abs(t - X[i]), i));
-        }
-        sort(dist.begin(), dist.end());
-        for(int i = 0; i < n; ++i){
-            if(X[dist[i].ss] < t){
-                if(X[dist[i].ss] < t - L[i + 1]) ok = 0;
-            }
-            else if(X[dist[i].ss] > t){
-                if(X[dist[i].ss] > t + L[i + 1]) ok = 0;
-            }
-        }
-        ans += ok;
     }
     cout << ans << '\n';
 }
