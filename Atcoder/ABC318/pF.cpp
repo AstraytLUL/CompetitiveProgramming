@@ -48,7 +48,6 @@ void solve(){
                 p.pb(tmp / 2 + 1);
             }else{
                 sp.insert(tmp / 2);
-                p.pb(tmp / 2 - 1);
                 p.pb(tmp / 2);
                 p.pb(tmp / 2 + 1);
             }
@@ -59,9 +58,10 @@ void solve(){
     for(int i = 0; i < (int)p.size() - 1; ++i){
         int l = p[i], r = p[i + 1] - 1;
         if(sp.find(l) != sp.end()) continue;
+        int t = (l + r) / 2;
         vector<pii> dist;
         for(int j = 0; j < n; ++j){
-            dist.pb(pii(abs(l - X[j]), j));
+            dist.pb(pii(abs(t - X[j]), j));
         }
         sort(dist.begin(), dist.end());
         for(int j = 0; j < n; ++j){
