@@ -35,11 +35,13 @@ void solve(){
     int n, ans = 0; cin >> n;
     vector<int> X(n), L(n);
     vector<int> p;
-    p.pb(-1000000000000000000), p.pb(1000000000000000001);
+    p.pb(-2000000000000000000), p.pb(2000000000000000001);
     for(int i = 0; i < n; ++i) cin >> X[i];
     for(int i = 0; i < n; ++i) cin >> L[i];
     set<int> sp;
     for(int i = 0; i < n; ++i){
+        sp.insert(X[i]);
+        p.pb(X[i] + 1);
         p.pb(X[i]);
         for(int j = i + 1; j < n; ++j){
             int tmp = X[i] + X[j];
@@ -58,10 +60,9 @@ void solve(){
     for(int i = 0; i < (int)p.size() - 1; ++i){
         int l = p[i], r = p[i + 1] - 1;
         if(sp.find(l) != sp.end()) continue;
-        int t = (l + r) / 2;
         vector<pii> dist;
         for(int j = 0; j < n; ++j){
-            dist.pb(pii(abs(t - X[j]), j));
+            dist.pb(pii(abs(l - X[j]), j));
         }
         sort(dist.begin(), dist.end());
         for(int j = 0; j < n; ++j){
