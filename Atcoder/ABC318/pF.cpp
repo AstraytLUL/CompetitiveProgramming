@@ -40,19 +40,12 @@ void solve(){
     for(int i = 0; i < n; ++i) cin >> L[i];
     set<int> sp;
     for(int i = 0; i < n; ++i){
-        sp.insert(X[i]);
-        p.pb(X[i] + 1);
         p.pb(X[i]);
         for(int j = i + 1; j < n; ++j){
             int tmp = X[i] + X[j];
-            if(tmp % 2){
-                p.pb(tmp / 2);
-                p.pb(tmp / 2 + 1);
-            }else{
-                sp.insert(tmp / 2);
-                p.pb(tmp / 2);
-                p.pb(tmp / 2 + 1);
-            }
+            p.pb(tmp / 2);
+            p.pb(tmp / 2 + 1);
+            if(tmp % 2 == 0) sp.insert(tmp / 2);
         }
     }
     sort(p.begin(), p.end());
