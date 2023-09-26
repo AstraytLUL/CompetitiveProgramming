@@ -1,0 +1,61 @@
+//君の手を握ってしまったら
+//孤独を知らないこの街には
+//もう二度と帰ってくることはできないのでしょう
+//君が手を差し伸べた 光で影が生まれる
+//歌って聞かせて この話の続き
+//連れて行って見たことない星まで
+//さユリ - 花の塔
+#include <iostream>
+#include <string>
+#include <cmath>
+#include <vector>
+#include <algorithm>
+#include <utility>
+#include <bitset>
+#include <climits>
+#include <set>
+#include <map>
+#include <iomanip>
+#include <queue>
+#include <cstring>
+#include <fstream>
+using namespace std;
+typedef long long ll;
+#define int ll
+#define starburst ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+#define pii pair<int,int>
+#define pb push_back
+#define ff first
+#define ss second
+#define mp make_pair
+#define maxn 200005
+#define mod 1000000007
+
+void solve(){
+    int n; cin >> n;
+    vector<int> s(n), e(n);
+    for(int i = 0; i < n; ++i){
+        cin >> s[i] >> e[i];
+    }
+    int l = 1, r = 1e9 + 1;
+    while(l != r){
+        int mid = (l + r) / 2, mx = 0;
+        for(int i = 1; i < n; ++i){
+            if(mid <= s[i]) mx = max(mx, e[i]);
+        }
+        if(mx < e[0] || mid > s[0]) r = mid;
+        else l = mid + 1;
+    }
+    int ok = 1;
+    for(int i = 1; i < n; ++i){
+        if(l <= s[i] && e[i] >= e[0]) ok = 0;
+    }
+    if(s[0] < l) ok = 0;
+    cout << (ok ? l : -1) << '\n';
+}
+
+signed main(){
+    starburst
+    int t = 1; cin >> t;
+    while(t--) solve();
+}
