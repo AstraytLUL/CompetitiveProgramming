@@ -13,12 +13,12 @@ using namespace std;
 #define pb push_back
 
 vector<pii> adj[100005];
-int L[25][25];
-double dp[20][1<<20], dp2[20][1<<20];
+int L[21][21];
+double dp[21][1<<21];
 bool connected = 1;
 
 void dijkstra(int s, int n, vector<pii> sp, int id){
-    vector<int> dist(n + 1, 1e9);
+    vector<int> dist(n + 1, 1e10);
     dist[s] = 0;
     priority_queue<pii, vector<pii>, greater<pii>> pq;
     pq.push(pii(0, s));
@@ -36,7 +36,7 @@ void dijkstra(int s, int n, vector<pii> sp, int id){
     for(int i = 0; i < sp.size(); ++i){
         L[id][i] = L[i][id] = dist[sp[i].ff];
     }
-    if(s == 1 && dist[n] == 1e9) connected = 0;
+    if(s == 1 && dist[n] == 1e10) connected = 0;
 }
 
 void solve(){
@@ -76,45 +76,28 @@ void solve(){
         cout << fixed << setprecision(7) << 1.0 * L[0][1] / t << '\n';
         return;
     }
-    sp.pop_back();
     int sz = sp.size();
     for(auto &x:dp){
         for(auto &y:x){
             y = 1e18;
         }
     }
-    for(auto &x:dp2){
-        for(auto &y:x){
-            y = 1;
-        }
+    vector<int> v;
+    for(int s = 0; s < (1<<sz) - 1; s++){
+        v.pb(s);
     }
-    double p[sz];
-    for(int i = 0; i < sz; ++i){
-        p[i] = sp[i].ss / 100.00;
-    }
-    dp[n][(1<<sz) - 1] = 0;
-    for(int s = 0; s < (1<<sz); s++){
-        for(int x = 0; x < sz; x++){
-            if((s & (1<<x)) == 0) continue;
-            for(int y = 0; y < sz; ++y){
-                if((s & (1<<y)) == 0 || x == y) continue;
-                double d = dp[y][s ^ (1<<x)] + dp2[y][s ^ (1<<x)] * (p[y] * L[y][x] / t + (1.0 - p[y]) * L[y][sz] / r);
-                if(d < dp[x][s]){
-                    dp[x][s] = d;
-                    dp2[x][s] = dp2[y][s^(1<<x)] * p[y];
-                }
+    sort(v.begin(), v.end(), [](int a, int b){return __builtin_popcount(a) > __builtin_popcount(b);});
+    dp[sz - 1][(1<<sz) - 1] = 0;
+    for(auto s:v){
+        for(int i = 0; i < sz; ++i){
+            for(int j = 0; j < sz; ++j){
+                if((s & (1<<i)) == 0 || (s & (1<<j)) || i == j) continue;
+                double p = sp[i].ss / 100.00, pp = 1.0 - p;
+                dp[i][s] = min(dp[i][s], pp * L[i][sz - 1] / r + p * min(dp[j][s ^ (1 << j)] + (1.0 * L[i][j] / t), 1.0 * L[i][sz - 1] / (double)t));
             }
         }
     }
-    double ans = 1e18;
-    for(int s = 0; s < (1<<sz); ++s){
-        if((s & 1) == 0) continue;
-        for(int i = 1; i < sz; ++i){
-            if((s & (1 << i)) == 0) continue;
-            ans = min(ans, dp[i][s] + dp2[i][s] * (p[i] * L[i][sz] / t + (1 - p[i]) * L[i][sz] / r));
-        }   
-    }
-    cout << fixed << setprecision(7) << dp[0][0] << '\n';
+    cout << fixed << setprecision(7) << dp[0][1] << '\n';
 }
 
 signed main(){
