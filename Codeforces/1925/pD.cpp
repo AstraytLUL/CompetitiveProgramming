@@ -54,14 +54,15 @@ void solve(){
         int u, v, w; cin >> u >> v >> w;
         sum += w;
     }
+    sum %= mod;
     int t = fastpow((n * (n - 1) / 2) % mod, mod - 2);
     int p1 = t, p2 = (n * (n - 1) / 2 - 1) % mod * t % mod;
     int ans = sum * t % mod * k % mod;
     for(int i = 1; i <= k; ++i){
         int add = i * (i - 1) / 2;
         add %= mod;
-        int prob = C(k, i) * fastpow(p1, i) % mod * fastpow(p2, k - i);
-        ans += add * prob % mod * m % mod;
+        int prob = C(k, i) * fastpow(p1, i) % mod * fastpow(p2, k - i) % mod;
+        ans += (add * prob) % mod * m % mod;
         ans %= mod;
     }
     cout << ans << '\n';
